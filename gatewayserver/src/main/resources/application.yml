@@ -1,0 +1,86 @@
+server:
+  port: 9093
+
+spring:
+  application:
+    name: gatewayserver
+
+  config:
+    import: optional:configserver:http://configserver:8071/
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 10s
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    com.eazybank: DEBUG
+    com.eazybank.gatewayserver: DEBUG
+  pattern:
+    level: "%5p[${spring.application.name},%X{trace_id},%X{span_id}]"
+
+
+
+  file:
+    name: logs/eazybank-app.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'   # expose all actuator endpoints
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+    shutdown:
+      enabled: true   # ✅ Spring Boot 2.x / 3.x style
+
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+springdoc:   # if you use OpenAPI/Swagger
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+
+info:
+  app:
+    name: gateway
+    description: Eazy Bank gateway application
+    version: 1.0.0
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 2
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eurekaserver:8070/eureka/

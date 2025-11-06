@@ -1,0 +1,60 @@
+2025-09-22T18:05:54.669+05:30  INFO 16336 --- [loans] [main] c.eazybytes.loans.LoansApplicationTests  : Starting LoansApplicationTests using Java 24.0.1 with PID 16336 (started by Vinay Patel in D:\eazy bank\section 6\loans)
+2025-09-22T18:05:54.677+05:30  INFO 16336 --- [loans] [main] c.eazybytes.loans.LoansApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2025-09-22T18:05:54.772+05:30  INFO 16336 --- [loans] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8071/
+2025-09-22T18:05:54.773+05:30  INFO 16336 --- [loans] [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=loans, profiles=[default], label=null, version=288464ac424ebfb93092c351437e6d63219d43cd, state=
+2025-09-22T18:05:56.853+05:30  INFO 16336 --- [loans] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-22T18:05:57.056+05:30  INFO 16336 --- [loans] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 190 ms. Found 1 JPA repository interface.
+2025-09-22T18:05:57.342+05:30  INFO 16336 --- [loans] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=c9dbd76b-a742-355e-abcd-8f8240a3955d
+2025-09-22T18:05:58.017+05:30  INFO 16336 --- [loans] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-22T18:05:58.114+05:30  INFO 16336 --- [loans] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-09-22T18:05:58.170+05:30  INFO 16336 --- [loans] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-09-22T18:05:58.584+05:30  INFO 16336 --- [loans] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-22T18:05:58.615+05:30  INFO 16336 --- [loans] [main] com.zaxxer.hikari.HikariDataSource       : HikariCP - Starting...
+2025-09-22T18:05:58.778+05:30  INFO 16336 --- [loans] [main] com.zaxxer.hikari.pool.HikariPool        : HikariCP - Added connection com.mysql.cj.jdbc.ConnectionImpl@6f26e775
+2025-09-22T18:05:58.780+05:30  INFO 16336 --- [loans] [main] com.zaxxer.hikari.HikariDataSource       : HikariCP - Start completed.
+2025-09-22T18:05:58.840+05:30  WARN 16336 --- [loans] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-22T18:05:58.841+05:30  WARN 16336 --- [loans] [main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-09-22T18:05:58.863+05:30  INFO 16336 --- [loans] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariCP)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-22T18:05:59.965+05:30  INFO 16336 --- [loans] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-22T18:06:00.039+05:30  INFO 16336 --- [loans] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-22T18:06:00.832+05:30  WARN 16336 --- [loans] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-22T18:06:02.252+05:30  INFO 16336 --- [loans] [main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestTemplate.
+2025-09-22T18:06:02.306+05:30  WARN 16336 --- [loans] [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2025-09-22T18:06:02.319+05:30  INFO 16336 --- [loans] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 17 endpoints beneath base path '/actuator'
+2025-09-22T18:06:02.471+05:30  INFO 16336 --- [loans] [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2025-09-22T18:06:02.507+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2025-09-22T18:06:02.511+05:30  INFO 16336 --- [loans] [main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2025-09-22T18:06:02.543+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2025-09-22T18:06:02.545+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2025-09-22T18:06:02.551+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2025-09-22T18:06:02.552+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2025-09-22T18:06:02.552+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2025-09-22T18:06:02.553+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2025-09-22T18:06:02.559+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2025-09-22T18:06:03.081+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2025-09-22T18:06:03.084+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2025-09-22T18:06:03.087+05:30  INFO 16336 --- [loans] [main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2025-09-22T18:06:03.088+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1758544563088 with initial instances count: 2
+2025-09-22T18:06:03.091+05:30  INFO 16336 --- [loans] [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application LOANS with eureka with status UP
+2025-09-22T18:06:03.092+05:30  INFO 16336 --- [loans] [main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1758544563092, current=UP, previous=STARTING]
+2025-09-22T18:06:03.094+05:30  INFO 16336 --- [loans] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LOANS/LAPTOP-E2KASN14.mshome.net:loans:9092: registering service...
+2025-09-22T18:06:03.128+05:30  INFO 16336 --- [loans] [main] c.eazybytes.loans.LoansApplicationTests  : Started LoansApplicationTests in 10.781 seconds (process running for 13.824)
+2025-09-22T18:06:03.158+05:30  INFO 16336 --- [loans] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LOANS/LAPTOP-E2KASN14.mshome.net:loans:9092 - registration status: 204
+2025-09-22T18:06:03.974+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application LOANS with eureka with status DOWN
+2025-09-22T18:06:03.976+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1758544563976, current=DOWN, previous=UP]
+2025-09-22T18:06:03.976+05:30  INFO 16336 --- [loans] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LOANS/LAPTOP-E2KASN14.mshome.net:loans:9092: registering service...
+2025-09-22T18:06:03.985+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-22T18:06:03.988+05:30  INFO 16336 --- [loans] [DiscoveryClient-InstanceInfoReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LOANS/LAPTOP-E2KASN14.mshome.net:loans:9092 - registration status: 204
+2025-09-22T18:06:03.989+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariCP - Shutdown initiated...
+2025-09-22T18:06:04.000+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariCP - Shutdown completed.
+2025-09-22T18:06:04.002+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2025-09-22T18:06:07.006+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Unregistering ...
+2025-09-22T18:06:07.165+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_LOANS/LAPTOP-E2KASN14.mshome.net:loans:9092 - deregister  status: 200
+2025-09-22T18:06:07.166+05:30  INFO 16336 --- [loans] [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient

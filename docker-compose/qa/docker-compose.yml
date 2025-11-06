@@ -1,0 +1,128 @@
+services:
+
+  rabbit:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+    networks:
+      - eazybank
+
+  configserver:
+    image: vinay12oct/configserver:s9
+    container_name: configserver-ms
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    healthcheck:
+      test: curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - eazybank
+
+  eurekaserver:
+    image: vinay12oct/eurekaserver:s9
+    container_name: eurekaserver-ms
+    ports:
+      - "8070:8070"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: eurekaserver
+
+  account:
+    image: vinay12oct/account:s9
+    container_name: account-ms
+    ports:
+      - "9090:9090"
+    environment:
+      SPRING_APPLICATION_NAME: account
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    networks:
+      - eazybank
+
+  loans:
+    image: vinay12oct/loans:s9
+    container_name: loans-ms
+    ports:
+      - "9092:9092"
+    environment:
+      SPRING_APPLICATION_NAME: loans
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    networks:
+      - eazybank
+
+  cards:
+    image: vinay12oct/cards:s9
+    container_name: cards-ms
+    ports:
+      - "9091:9091"
+    environment:
+      SPRING_APPLICATION_NAME: cards
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    networks:
+      - eazybank
+
+  gatewayserver:
+    image: vinay12oct/gatewayserver:s9
+    container_name: gatewayserver-ms
+    ports:
+      - "9093:9093"
+    environment:
+      SPRING_APPLICATION_NAME: gatewayserver
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    networks:
+      - eazybank
+
+networks:
+  eazybank:
+    driver: bridge

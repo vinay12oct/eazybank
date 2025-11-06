@@ -1,0 +1,319 @@
+version: '3.9'
+
+services:
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    entrypoint: sh -c "mkdir -p /data && exec minio server /data --console-address ':9001'"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio_data:/data
+      - ./minio_config:/root/.minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - eazybank
+
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - eazybank
+
+  configserver:
+    image: vinay12oct/configserver:s9
+    container_name: configserver-ms
+    ports:
+      - "8071:8071"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+      OTEL_SERVICE_NAME: configserver
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+    volumes:
+      - ./opentelemetry-javaagent.jar:/app/opentelemetry-javaagent.jar
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8071/actuator/health/readiness || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - eazybank
+
+  eurekaserver:
+    image: vinay12oct/eurekaserver:s9
+    container_name: eurekaserver-ms
+    ports:
+      - "8070:8070"
+    environment:
+      SPRING_APPLICATION_NAME: eurekaserver
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+      OTEL_SERVICE_NAME: eurekaserver
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+    volumes:
+      - ./opentelemetry-javaagent.jar:/app/opentelemetry-javaagent.jar
+    depends_on:
+      configserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8070/actuator/health/readiness || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - eazybank
+
+  account:
+    image: vinay12oct/account:s9
+    container_name: account-ms
+    ports:
+      - "9090:9090"
+    environment:
+      SPRING_APPLICATION_NAME: account
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+      OTEL_SERVICE_NAME: account
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+    volumes:
+      - ./opentelemetry-javaagent.jar:/app/opentelemetry-javaagent.jar
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health/readiness || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - eazybank
+
+  loans:
+    image: vinay12oct/loans:s9
+    container_name: loans-ms
+    ports:
+      - "9092:9092"
+    environment:
+      SPRING_APPLICATION_NAME: loans
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+      OTEL_SERVICE_NAME: loans
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+    volumes:
+      - ./opentelemetry-javaagent.jar:/app/opentelemetry-javaagent.jar
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9092/actuator/health/readiness || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - eazybank
+
+  cards:
+    image: vinay12oct/cards:s9
+    container_name: cards-ms
+    ports:
+      - "9091:9091"
+    environment:
+      SPRING_APPLICATION_NAME: cards
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+      OTEL_SERVICE_NAME: cards
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+    volumes:
+      - ./opentelemetry-javaagent.jar:/app/opentelemetry-javaagent.jar
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/actuator/health/readiness || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - eazybank
+
+  gatewayserver:
+    image: vinay12oct/gatewayserver:s9
+    container_name: gatewayserver-ms
+    ports:
+      - "9093:9093"
+    environment:
+      SPRING_APPLICATION_NAME: gatewayserver
+      SPRING_RABBITMQ_HOST: rabbit
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/opentelemetry-javaagent.jar"
+      OTEL_SERVICE_NAME: gatewayserver
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+    volumes:
+      - ./opentelemetry-javaagent.jar:/app/opentelemetry-javaagent.jar
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9093/actuator/health/readiness || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    networks:
+      - eazybank
+
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    command: -config.file=/etc/loki/config.yml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ../observability/loki/loki-config.yml:/etc/loki/config.yml
+    networks:
+      - eazybank
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ../observability/promtail/promtail-local-config.yml:/etc/promtail/config.yml
+      - /var/log:/var/log
+      - ./logs:/app/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./promtail_positions:/tmp
+    depends_on:
+      - loki
+    ports:
+      - "9080:9080"
+    networks:
+      - eazybank
+
+  tempo:
+    image: grafana/tempo:2.9.0
+    container_name: tempo
+    command: >
+      -config.file=/etc/tempo/tempo-config.yml
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - "D:/eazy bank/section9/docker-compose/observability/tempo/tempo-config.yml:/etc/tempo/tempo-config.yml"
+      - "D:/eazy bank/section9/docker-compose/observability/tempo/traces:/var/tempo/traces"
+      - "D:/eazy bank/section9/docker-compose/observability/tempo/wal:/var/tempo/wal"
+
+    networks:
+      - eazybank
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_SERVER_HTTP_PORT: 3000
+      GF_AUTH_ANONYMOUS_ENABLED: 'true'
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_SECURITY_DISABLE_GRAVATAR: 'true'
+      GF_LOG_MODE: console
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana_data:/var/lib/grafana
+      - ./grafana_provisioning:/etc/grafana/provisioning
+      - ./grafana_logs:/var/log/grafana
+    depends_on:
+      - loki
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - eazybank
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9094:9090"
+    volumes:
+      - ../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - eazybank
+
+networks:
+  eazybank:
+    driver: bridge

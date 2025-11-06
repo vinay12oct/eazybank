@@ -1,0 +1,47 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090     # Prometheus container name + port
+    isDefault: false
+    editable: true
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100           # Loki container name + port
+    isDefault: true
+    editable: true
+    jsonData:
+      maxLines: 1000
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    url: http://tempo:3100          # Tempo container name + port
+    isDefault: false
+    editable: true
+    jsonData:
+      tracesToLogs:
+        datasourceUid: "Loki"       # Link traces → logs
+        tags: ["job", "instance", "pod", "namespace"]
+        mappedTags:
+          - key: "service.name"
+            value: "service"
+        mapTagNamesEnabled: true
+        filterByTraceID: true
+        filterBySpanID: false
+      tracesToMetrics:
+        datasourceUid: "Prometheus" # Link traces → metrics
+        tags: ["service.name"]
+        queries:
+          - name: "Latency"
+            query: "histogram_quantile(0.9, sum(rate(tempo_spanmetrics_latency_bucket[5m])) by (le, service_name))"
+      serviceMap:
+        datasourceUid: "Prometheus"
+      search:
+        hide: false
+      nodeGraph:
+        enabled: true

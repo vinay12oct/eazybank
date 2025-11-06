@@ -1,0 +1,89 @@
+server:
+  port: 9092
+
+
+spring:
+  application:
+    name: loans
+  datasource:
+    url: jdbc:mysql://host.docker.internal:3306/eazybank?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: admin123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      pool-name: HikariCP
+      max-lifetime: 1800000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # validate schema, avoids accidental table drops in prod
+    show-sql: true        # disable in prod (can enable in dev)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+
+  config:
+    import: optional:configserver:http://configserver:8071/
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    com.eazybytes: DEBUG   # your package logs
+    com.eazybytes.loans: DEBUG
+  pattern:
+    level: "%5p[${spring.application.name},%X{trace_id},%X{span_id}]"
+
+  file:
+    name: logs/eazybank-app.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'   # expose all actuator endpoints
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
+    shutdown:
+      enabled: true   # ✅ Spring Boot 2.x / 3.x style
+
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+springdoc:   # if you use OpenAPI/Swagger
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eurekaserver:8070/eureka/
+
+info:
+  app:
+    name: loans
+    description: Eazy Bank loans application
+    version: 1.0.0
+
