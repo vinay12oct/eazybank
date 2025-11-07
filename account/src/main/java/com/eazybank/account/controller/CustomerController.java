@@ -76,4 +76,9 @@ public class CustomerController {
         return ResponseEntity.ok(ApiResponse.success("200", "Customers details fetched successfully", customerDetailsDto));
 
     }
+
+    @GetMapping("/hello")
+    public ResponseEntity<ApiResponse<String>> getHelloMsg(){
+        return  ResponseEntity.ok(ApiResponse.success("200","get hello msg","hello"));
+    }
 }
