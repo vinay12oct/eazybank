@@ -79,6 +79,6 @@ public class CustomerController {
 
     @GetMapping("/hello")
     public ResponseEntity<ApiResponse<String>> getHelloMsg(){
-        return  ResponseEntity.ok(ApiResponse.success("200","get new  hello msg","hello"));
+        return  ResponseEntity.ok(ApiResponse.success("200","get new updated  hello msg","hello"));
     }
 }
