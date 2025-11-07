@@ -98,7 +98,7 @@
 						</auth>
 					</from>
 					<to>
-						<image>vinay12oct/${project.artifactId}:s9</image>
+						<image>vinay12oct/${project.artifactId}:s20</image>
 					</to>
 					<container>
 						<mainClass>com.eazybank.configserver.ConfigserverApplication</mainClass>
