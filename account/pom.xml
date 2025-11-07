@@ -173,7 +173,7 @@
 						</auth>
 					</from>
 					<to>
-						<image>vinay12oct/${project.artifactId}:s9</image>
+						<image>vinay12oct/${project.artifactId}:${env.BUILD_NUMBER}</image>
 					</to>
 					<container>
 						<mainClass>com.eazybank.account.AccountApplication</mainClass>
